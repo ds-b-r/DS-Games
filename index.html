@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10131c">
+<title>DS Subway — Jogar</title>
+<style>
+:root{--bg:#10131c;--panel:#1a2130;--line:#303a4e;--purple:#8b5cf6;--mint:#25d6a1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+header{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);background:#121722}
+.brand{font-size:20px;font-weight:900;letter-spacing:1px}.brand b{display:inline-grid;place-items:center;background:var(--purple);border-radius:9px;padding:8px;margin-right:8px}
+main{max-width:1100px;margin:24px auto;padding:0 16px}
+.heading{text-align:center;margin:20px 0 22px}.eyebrow{font-size:11px;letter-spacing:3px;color:var(--mint);font-weight:bold}
+h1{font-size:clamp(28px,5vw,46px);margin:8px 0 6px}.sub{color:#aab4c5;margin:0}
+.shell{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:0 20px 60px #0005}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 4px 12px}
+.game-name{font-weight:800}.actions{display:flex;gap:8px}
+button{border:0;border-radius:9px;padding:10px 13px;font-weight:bold;cursor:pointer}
+.full{background:var(--mint);color:#10231e}.reload{background:#30394b;color:#fff}
+.frame-wrap{position:relative;width:100%;height:min(70vh,650px);min-height:380px;background:#080b12;border-radius:12px;overflow:hidden}
+iframe{width:100%;height:100%;border:0;background:#080b12}
+.fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:25px;background:linear-gradient(140deg,#173d3c,#17243e 55%,#342052)}
+.fallback.show{display:flex}.fallback-inner{max-width:480px}.fallback h2{font-size:27px;margin:8px}.fallback p{line-height:1.55;color:#d0d7e4}
+.launch{display:inline-block;margin-top:8px;background:var(--mint);color:#10231e;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:800}
+.hint{text-align:center;color:#9da9bc;font-size:12px;line-height:1.5;padding:12px 8px 2px}
+body.expanded header,body.expanded .heading{display:none}body.expanded main{max-width:none;margin:0;padding:0}body.expanded .shell{padding:0;border:0;border-radius:0;height:100vh}body.expanded .toolbar{padding:10px 14px}body.expanded .frame-wrap{height:calc(100vh - 54px);min-height:0;border-radius:0}
+@media(max-width:600px){header{height:58px}.frame-wrap{height:65vh;min-height:360px}.toolbar{align-items:flex-start}.game-name{padding-top:8px}button{padding:9px 10px;font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><b>DS</b>SUBWAY</div><span style="font-size:12px;color:#aab4c5">ARCADE</span></header>
+<main>
+  <section class="heading"><div class="eyebrow">DS GAMES ORIGINAL</div><h1>Subway Surfers</h1><p class="sub">Jogue direto nesta página.</p></section>
+  <section class="shell" id="gameShell">
+    <div class="toolbar"><div class="game-name">🎮 Subway Surfers</div><div class="actions"><button class="reload" id="reload">Recarregar</button><button class="full" id="fullscreen">Tela cheia ⛶</button></div></div>
+    <div class="frame-wrap" id="frameWrap">
+      <iframe id="gameFrame" title="Subway Surfers — plataforma parceira" src="https://poki.com/br/g/subway-surfers" allow="fullscreen; autoplay; gamepad" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="fallback" id="fallback"><div class="fallback-inner"><div style="font-size:54px">🚆</div><h2>O jogo não pôde ser exibido aqui</h2><p>A plataforma pode bloquear a incorporação em sites externos. O DS Subway não consegue remover essa restrição. Você pode abrir a versão oficial em uma nova aba.</p><a class="launch" href="https://poki.com/br/g/subway-surfers" target="_blank" rel="noopener noreferrer">Abrir versão oficial ↗</a></div></div>
+    </div>
+    <p class="hint">Se a área do jogo ficar vazia ou apresentar bloqueio, é uma restrição do provedor, não um erro do seu Chromebook.</p>
+  </section>
+</main>
+<script>
+const frame=document.getElementById('gameFrame');
+const fallback=document.getElementById('fallback');
+document.getElementById('reload').addEventListener('click',()=>{fallback.classList.remove('show');frame.src=frame.src;});
+document.getElementById('fullscreen').addEventListener('click',async()=>{
+  const target=document.getElementById('gameShell');
+  try {
+    if(!document.fullscreenElement){await target.requestFullscreen();document.body.classList.add('expanded');}
+    else {await document.exitFullscreen();}
+  } catch(e) { alert('Tela cheia não está disponível neste navegador.'); }
+});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)document.body.classList.remove('expanded');});
+frame.addEventListener('error',()=>fallback.classList.add('show'));
+// Navegadores não expõem ao site pai se uma página externa foi bloqueada por X-Frame-Options/CSP.
+// Mantemos uma alternativa explícita, sem tentar contornar a proteção.
+</script>
+</body>
+</html>
