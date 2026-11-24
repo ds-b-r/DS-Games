@@ -85,6 +85,7 @@ const games={
  coffee:{name:'Idle Coffee Shop 3D',url:'https://www.madkidgames.com/full/idle-coffee-shop-3d',credit:'https://www.madkidgames.com/game/idle-coffee-shop-3d'},
  streetfighter:{name:'Street Fighter II',url:'https://www.madkidgames.com/full/street-fighter-ii',credit:'https://www.madkidgames.com/game/street-fighter-ii'},
 
+ mk3:{name:'Mortal Kombat 3',url:'https://www.retrogames.cc/embed/42478-mortal-kombat-3-rev-2-1.html',credit:'https://www.retrogames.cc/embed/42478-mortal-kombat-3-rev-2-1.html',provider:'RetroGames.cc'},
  pg_moto_x3m:{name:"Moto X3M",url:"https://playgama.com/export/game/moto-x3m",credit:"https://playgama.com/game/moto-x3m",provider:'Playgama'},
  pg_snake_2048_64be_1:{name:"Snake 2048",url:"https://snake-2048.com/export",credit:"https://playgama.com/game/snake-2048-64be-1",provider:'Playgama'},
  pg_golf_orbit:{name:"Golf Orbit",url:"https://playgama.com/export/game/golf-orbit",credit:"https://playgama.com/game/golf-orbit",provider:'Playgama'},
@@ -98,7 +99,7 @@ const games={
 };
 const intro=document.getElementById('intro');function closeIntro(){intro.classList.add('hide');setTimeout(()=>intro.remove(),750)}document.getElementById('skip').addEventListener('click',closeIntro);setTimeout(closeIntro,2200);
 const player=document.getElementById('player'),wrap=document.getElementById('frameWrap'),name=document.getElementById('gameName'),credit=document.getElementById('credit');let active=null;
-function openGame(id){const g=games[id];if(!g)return;active=id;name.textContent='🎮 '+g.name;wrap.replaceChildren();const f=document.createElement('iframe');f.title=g.name+' incorporado via '+(g.provider||'MadKidGames');f.src=g.url;f.allow='fullscreen; autoplay; gamepad';f.allowFullscreen=true;f.scrolling='no';f.loading='eager';f.referrerPolicy='no-referrer-when-downgrade';wrap.appendChild(f);credit.replaceChildren('Jogo incorporado via ');const a=document.createElement('a');a.href=g.credit;a.target='_blank';a.rel='noopener noreferrer';a.textContent=g.provider||'MadKidGames';credit.appendChild(a);player.classList.add('active');player.scrollIntoView({behavior:'smooth',block:'start'});}
+function openGame(id){const g=games[id];if(!g)return;active=id;name.textContent='🎮 '+g.name;wrap.replaceChildren();const f=document.createElement('iframe');f.title=g.name+' incorporado via '+(g.provider||'MadKidGames');f.src=g.url;f.allow='fullscreen; autoplay; gamepad; cross-origin-isolated';f.allowFullscreen=true;f.scrolling='no';f.loading='eager';f.referrerPolicy='no-referrer-when-downgrade';wrap.appendChild(f);credit.replaceChildren('Jogo incorporado via ');const a=document.createElement('a');a.href=g.credit;a.target='_blank';a.rel='noopener noreferrer';a.textContent=g.provider||'MadKidGames';credit.appendChild(a);player.classList.add('active');player.scrollIntoView({behavior:'smooth',block:'start'});}
 document.querySelectorAll('[data-game]').forEach(b=>b.addEventListener('click',()=>openGame(b.dataset.game)));
 document.getElementById('back').addEventListener('click',()=>{player.classList.remove('active');wrap.replaceChildren();active=null;document.querySelector('.catalog-tools').scrollIntoView({behavior:'smooth'});});
 document.getElementById('reload').addEventListener('click',()=>{if(active)openGame(active)});
