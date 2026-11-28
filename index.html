@@ -59,11 +59,54 @@ body.expanded{overflow:hidden;background:#050a14}body.expanded header,body.expan
 @keyframes cinemaSweep{0%{opacity:0;transform:rotate(0deg) translateX(-35%)}50%{opacity:.8}100%{opacity:0;transform:rotate(0deg) translateX(35%)}}
 @keyframes cinemaLoad{to{transform:scaleX(1)}}
 
+
+/* DS Accounts + multiplayer */
+.account-bar{display:flex;gap:9px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin:10px auto 16px;max-width:1200px;padding:0 18px}
+.account-bar button,.social-btn{border:1px solid #ffffff20;border-radius:11px;padding:10px 14px;background:linear-gradient(135deg,#7144df,#4b2c9e);color:#fff;font-weight:800;cursor:pointer}
+.account-bar .ghost{background:#ffffff0b}
+.account-label{color:#b9c5d9;font-size:13px}
+.ds-modal{position:fixed;inset:0;z-index:9999;display:none;place-items:center;padding:16px;background:#03040bd9;backdrop-filter:blur(12px)}
+.ds-modal.open{display:grid}
+.ds-panel{width:min(100%,480px);max-height:90vh;overflow:auto;border:1px solid #ffffff24;border-radius:22px;background:linear-gradient(145deg,#18223a,#0c1222);padding:22px;box-shadow:0 30px 90px #000b;color:#eef2ff}
+.ds-panel h2{font:800 20px Orbitron;margin:0 0 8px}
+.ds-panel p{color:#aab8cf;line-height:1.5}
+.ds-panel input{width:100%;padding:12px 13px;margin:7px 0;border:1px solid #ffffff24;border-radius:11px;background:#080e1c;color:#fff;outline:none}
+.ds-panel input:focus{border-color:#9b6bff}
+.ds-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.ds-row>*{flex:1}
+.ds-panel button{border:0;border-radius:11px;padding:11px 14px;background:linear-gradient(135deg,#8b5cf6,#5b35bd);color:white;font-weight:800;cursor:pointer}
+.ds-panel button.alt{background:#ffffff12;border:1px solid #ffffff20}
+.ds-close{float:right;background:#ffffff12!important;padding:6px 10px!important}
+.ds-message{font-size:13px;min-height:20px;color:#80e6c1}
+.ds-profile{display:flex;gap:13px;align-items:center;margin:14px 0}
+.ds-avatar{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#292044;border:2px solid #a78bfa}
+.ds-code{font:900 27px Orbitron;letter-spacing:5px;color:#a78bfa;text-align:center;padding:13px;border:1px dashed #a78bfa66;border-radius:13px;margin:10px 0}
+.ds-room-card{display:none;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin:16px auto;padding:16px;border:1px solid #9b6bff55;border-radius:20px;background:linear-gradient(120deg,#17152c,#101a2d);max-width:760px}
+.ds-room-card.open{display:flex}
+.ds-room-person{display:grid;justify-items:center;gap:6px;min-width:90px}
+.ds-room-person img{width:58px;height:58px;border-radius:50%;object-fit:cover;background:#2a2340;border:2px solid #9b6bff}
+.ds-room-person b{font-size:13px}
+.ds-room-games{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:600px){.account-bar{justify-content:center}.ds-panel{padding:17px}}
+
 </style>
 </head>
 <body>
 <div class="intro" id="intro"><div class="intro-content"><div class="mark">DS</div><small>WELCOME TO</small><h2>DS GAMES</h2><p>SEU ARCADE, EM UM SÓ LUGAR</p><button class="skip" id="skip">ENTRAR NO ARCADE</button></div></div>
 <header><div class="brand"><b>DS</b>GAMES</div><span class="tag">BROWSER ARCADE</span></header>
+<div class="account-bar">
+  <span class="account-label" id="accountLabel">Você pode jogar sem conta.</span>
+  <button id="accountOpen">Entrar / Criar conta</button>
+  <button id="inviteOpen" class="ghost" hidden>＋ Convidar jogador</button>
+  <button id="profileOpen" class="ghost" hidden>Minha conta</button>
+</div>
+<section class="ds-room-card" id="roomCard" aria-live="polite">
+  <div class="ds-room-person"><img id="roomMeAvatar" alt="Sua foto"><b id="roomMeName">Você</b></div>
+  <div style="font:900 20px Orbitron;color:#9b6bff">＋</div>
+  <div class="ds-room-person"><img id="roomPeerAvatar" alt="Foto do parceiro"><b id="roomPeerName">Jogador</b></div>
+  <div class="ds-room-games"><button data-room-game="streetfighter">Jogar Street Fighter II</button><button data-room-game="mk3">Jogar Mortal Kombat 3</button></div>
+  <button class="alt" id="leaveRoom">Sair da sala</button>
+</section>
 <main>
 <section class="hero"><div class="eyebrow">DS GAMES ARCADE</div><h1>ESCOLHA SEU JOGO</h1><p class="sub">Diversão direto no navegador.</p></section>
 <div class="catalog-tools"><div class="section-title">🎮 CATÁLOGO DE JOGOS</div><input class="search" id="search" type="search" placeholder="Pesquisar jogo, estilo ou tag..." aria-label="Pesquisar jogo">
@@ -102,6 +145,29 @@ body.expanded{overflow:hidden;background:#050a14}body.expanded header,body.expan
 <section class="player" id="player" aria-label="Área do jogo"><div class="toolbar"><div class="game-name" id="gameName">🎮 Jogo</div><div class="actions"><button class="secondary" id="back">← Catálogo</button><button class="secondary" id="reload">Recarregar ↻</button><button class="play" id="fullscreen" style="width:auto">Tela cheia ⛶</button></div></div><div class="frame-wrap" id="frameWrap"></div><p class="credit" id="credit"></p></section>
 <p class="footer">DS GAMES · Jogos incorporados via MadKidGames e Playgama. Os jogos e suas marcas pertencem aos respectivos proprietários.</p>
 </main>
+
+<div class="ds-modal" id="authModal"><div class="ds-panel">
+<button class="ds-close" data-close="authModal">✕</button><h2>DS ACCOUNT</h2><p>Crie uma conta para convidar amigos. Jogar continua sendo livre.</p>
+<form id="authForm"><input id="authUsername" autocomplete="username" maxlength="18" placeholder="Username" required><input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Senha (mínimo 8 caracteres)" required>
+<div class="ds-row"><button type="submit" id="loginSubmit">Entrar</button><button type="button" class="alt" id="registerSubmit">Criar conta</button></div></form><div class="ds-message" id="authMessage"></div>
+</div></div>
+<div class="ds-modal" id="profileModal"><div class="ds-panel">
+<button class="ds-close" data-close="profileModal">✕</button><h2>MINHA CONTA</h2>
+<div class="ds-profile"><img class="ds-avatar" id="profileAvatar" alt="Foto de perfil"><div><b id="profileUsername"></b><p>Seu perfil DS Games</p></div></div>
+<label>Alterar foto de perfil<input type="file" id="avatarFile" accept="image/*"></label>
+<label>Novo username<input id="newUsername" maxlength="18" placeholder="Novo username"></label>
+<label>Nova senha (opcional)<input id="newPassword" type="password" minlength="8" placeholder="Nova senha"></label>
+<div class="ds-code" id="myInviteCode">-----</div><p style="text-align:center">Seu código permanente de convite</p>
+<div class="ds-row"><button id="saveProfile">Salvar alterações</button><button class="alt" id="copyCode">Copiar código</button></div>
+<button class="alt" id="logoutButton" style="width:100%;margin-top:10px">Sair da conta</button><div class="ds-message" id="profileMessage"></div>
+</div></div>
+<div class="ds-modal" id="inviteModal"><div class="ds-panel">
+<button class="ds-close" data-close="inviteModal">✕</button><h2>CONVIDAR JOGADOR</h2><p>Digite o código de 5 números do outro jogador. Ele precisará aceitar o convite.</p>
+<form id="inviteForm"><input id="inviteCodeInput" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="00000" autocomplete="off" required><button type="submit" style="width:100%">Enviar convite</button></form>
+<div class="ds-message" id="inviteMessage"></div>
+<div id="incomingInvites"></div>
+</div></div>
+
 <script>
 const games={
 subway:{name:'Subway Surfers',url:'https://www.madkidgames.com/full/subway-surfers',credit:'https://www.madkidgames.com/game/subway-surfers'},
@@ -201,6 +267,101 @@ applyFilters=function(){const q=normalizeText(searchInput.value);filteredCards=c
 
 
 applyFilters();
+
+// ===== DS ACCOUNTS / INVITES / GAME-ONLY SESSION =====
+const DS_API = 'https://SEU-WORKER.seu-subdominio.workers.dev';
+const dsTokenKey='ds_games_session_v1';
+let dsToken=localStorage.getItem(dsTokenKey)||'';
+let dsMe=null, dsRoom=null, dsPoll=null;
+const $=id=>document.getElementById(id);
+const showModal=id=>$(id).classList.add('open');
+const hideModal=id=>$(id).classList.remove('open');
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>hideModal(b.dataset.close)));
+async function dsApi(path, opts={}) {
+  if(!DS_API.startsWith('https://')||DS_API.includes('SEU-WORKER')) throw new Error('Configure a URL do Cloudflare Worker no código do DS Games.');
+  const res=await fetch(DS_API+path,{...opts,headers:{'Content-Type':'application/json',...(dsToken?{Authorization:'Bearer '+dsToken}:{}),...(opts.headers||{})}});
+  const data=await res.json().catch(()=>({error:'Resposta inválida do servidor'}));
+  if(!res.ok)throw new Error(data.error||'Erro na solicitação');
+  return data;
+}
+function dsAvatarUrl(v){return v||'https://api.dicebear.com/9.x/bottts-neutral/svg?seed=DSPlayer'}
+function updateAccountUI(){
+  $('accountOpen').hidden=!!dsMe;$('profileOpen').hidden=!dsMe;$('inviteOpen').hidden=!dsMe;
+  $('accountLabel').textContent=dsMe?'Conectado como '+dsMe.username:'Você pode jogar sem conta.';
+}
+async function loadMe(){
+  if(!dsToken){dsMe=null;updateAccountUI();return}
+  try{const r=await dsApi('/api/auth/me');dsMe=r.user;updateAccountUI();await refreshRoomAndInvites()}
+  catch(e){dsToken='';localStorage.removeItem(dsTokenKey);dsMe=null;updateAccountUI()}
+}
+async function auth(mode){
+  const username=$('authUsername').value.trim(),password=$('authPassword').value;
+  try{
+    const r=await dsApi('/api/auth/'+mode,{method:'POST',body:JSON.stringify({username,password})});
+    dsToken=r.token;localStorage.setItem(dsTokenKey,dsToken);dsMe=r.user;updateAccountUI();$('authMessage').textContent=mode==='register'?'Conta criada! Seu código já está reservado.':'Login realizado!';
+    setTimeout(()=>hideModal('authModal'),500);await refreshRoomAndInvites();
+  }catch(e){$('authMessage').textContent=e.message}
+}
+$('accountOpen').addEventListener('click',()=>showModal('authModal'));
+$('authForm').addEventListener('submit',e=>{e.preventDefault();auth('login')});
+$('registerSubmit').addEventListener('click',()=>auth('register'));
+$('profileOpen').addEventListener('click',async()=>{
+  if(!dsMe)return;
+  $('profileAvatar').src=dsAvatarUrl(dsMe.avatar);$('profileUsername').textContent=dsMe.username;
+  $('newUsername').value=dsMe.username;$('myInviteCode').textContent=dsMe.inviteCode;
+  showModal('profileModal');
+});
+$('saveProfile').addEventListener('click',async()=>{
+  try{
+    let avatar=dsMe.avatar||null;const file=$('avatarFile').files[0];
+    if(file){if(file.size>250000)throw new Error('A imagem precisa ter até 250 KB.');avatar=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(file)})}
+    const body={username:$('newUsername').value.trim(),avatar};
+    if($('newPassword').value)body.password=$('newPassword').value;
+    const r=await dsApi('/api/profile',{method:'PATCH',body:JSON.stringify(body)});
+    dsMe=r.user;$('newPassword').value='';$('profileMessage').textContent='Perfil atualizado.';$('profileUsername').textContent=dsMe.username;
+    $('profileAvatar').src=dsAvatarUrl(dsMe.avatar);$('myInviteCode').textContent=dsMe.inviteCode;updateAccountUI();
+  }catch(e){$('profileMessage').textContent=e.message}
+});
+$('copyCode').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(dsMe.inviteCode);$('profileMessage').textContent='Código copiado!'}catch(e){$('profileMessage').textContent='Código: '+dsMe.inviteCode}});
+$('logoutButton').addEventListener('click',()=>{dsToken='';dsMe=null;dsRoom=null;localStorage.removeItem(dsTokenKey);if(dsPoll)clearInterval(dsPoll);$('roomCard').classList.remove('open');updateAccountUI();hideModal('profileModal')});
+$('inviteOpen').addEventListener('click',()=>{showModal('inviteModal');refreshRoomAndInvites()});
+$('inviteCodeInput').addEventListener('input',e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,5));
+$('inviteForm').addEventListener('submit',async e=>{
+  e.preventDefault();try{const r=await dsApi('/api/rooms/invite',{method:'POST',body:JSON.stringify({code:$('inviteCodeInput').value})});dsRoom={id:r.roomId,status:'pending'};$('inviteMessage').textContent='Convite enviado para '+r.target.username+'. Aguardando aceitação.';$('inviteCodeInput').value='';startDsPolling()}
+  catch(err){$('inviteMessage').textContent=err.message}
+});
+async function refreshRoomAndInvites(){
+  if(!dsToken)return;
+  try{
+    const r=await dsApi('/api/rooms/invitations');
+    $('incomingInvites').innerHTML='';
+    (r.invitations||[]).forEach(inv=>{
+      const d=document.createElement('div');d.style.cssText='padding:12px;margin-top:10px;border:1px solid #ffffff20;border-radius:12px';
+      const t=document.createElement('b');t.textContent=inv.from.username+' convidou você';
+      const b=document.createElement('button');b.textContent='Aceitar';b.style.marginLeft='10px';
+      b.onclick=async()=>{try{const a=await dsApi('/api/rooms/'+inv.roomId+'/accept',{method:'POST',body:'{}'});dsRoom=a.room;renderDsRoom();$('inviteMessage').textContent='Convite aceito!';}catch(e){$('inviteMessage').textContent=e.message}};
+      d.append(t,b);$('incomingInvites').appendChild(d);
+    });
+    if(dsRoom){const s=await dsApi('/api/rooms/'+dsRoom.id);if(s.room?.status==='active'){dsRoom=s.room;renderDsRoom()}else if(s.room?.status==='closed'){dsRoom=null;$('roomCard').classList.remove('open')}}
+  }catch(e){}
+}
+function renderDsRoom(){
+  if(!dsRoom||!dsMe)return;
+  $('roomMeName').textContent=dsMe.username;$('roomMeAvatar').src=dsAvatarUrl(dsMe.avatar);
+  const peer=dsRoom.peer||{};$('roomPeerName').textContent=peer.username||'Jogador';$('roomPeerAvatar').src=dsAvatarUrl(peer.avatar);
+  $('roomCard').classList.add('open');hideModal('inviteModal');
+}
+function startDsPolling(){if(dsPoll)clearInterval(dsPoll);dsPoll=setInterval(refreshRoomAndInvites,4000)}
+$('leaveRoom').addEventListener('click',async()=>{if(!dsRoom)return;try{await dsApi('/api/rooms/'+dsRoom.id+'/leave',{method:'POST',body:'{}'})}catch(e){}dsRoom=null;$('roomCard').classList.remove('open')});
+document.querySelectorAll('[data-room-game]').forEach(b=>b.addEventListener('click',()=>{
+  if(!dsRoom)return;
+  const game=b.dataset.roomGame;
+  // Abre uma página separada que contém somente o jogo; não carrega configurações nem perfil.
+  const u=new URL('play.html',location.href);u.searchParams.set('game',game);u.searchParams.set('room',dsRoom.id);
+  window.open(u.href,'_blank','noopener');
+}));
+loadMe().then(startDsPolling);
+
 </script>
 </body>
 </html>
