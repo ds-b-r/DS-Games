@@ -13,7 +13,7 @@ body.clean #controls,body.clean #status{opacity:0;pointer-events:none}
 <iframe id="game" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe><video id="remote" autoplay playsinline></video>
 <div id="controls"><button id="share">Transmitir minha tela do jogo</button><button id="watch">Ver tela do parceiro</button><button id="back">Voltar ao jogo</button></div><div id="status">Conectando à sala…</div>
 <script>
-const API='https://SEU-WORKER.seu-subdominio.workers.dev';
+const API='https://ds-games-api.paulodaniel07oficial.workers.dev';
 const token=localStorage.getItem('ds_games_session_v1');
 const params=new URLSearchParams(location.search),room=params.get('room'),game=params.get('game');
 const games={streetfighter:'https://www.madkidgames.com/full/street-fighter-ii',mk3:'https://www.retrogames.cc/embed/42478-mortal-kombat-3-rev-2-1.html'};
